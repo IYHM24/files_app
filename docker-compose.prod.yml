@@ -1,0 +1,69 @@
+# docker-compose.prod.yml
+# Configuración específica para producción
+# Uso: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+version: '3.8'
+
+services:
+  files-app:
+    # Configuraciones de producción
+    restart: always
+    
+    # Variables de entorno para producción
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    
+    # Mapear al puerto 80 en producción
+    ports:
+      - "80:3000"
+    
+    # Configuraciones de logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Labels para proxy reverso (si usas Traefik, Nginx, etc.)
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.files-app.rule=Host(`yourdomain.com`)"
+      - "traefik.http.routers.files-app.tls=true"
+      - "traefik.http.routers.files-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.files-app.loadbalancer.server.port=3000"
+    
+    # Limitar recursos en producción
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  # Opcional: Servicio de base de datos para producción
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: files-app-db
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_DB=files_app
+  #     - POSTGRES_USER=files_user
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app-network
+  #   ports:
+  #     - "5432:5432"
+
+# volumes:
+#   postgres_data:
+#     driver: local

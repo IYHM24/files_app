@@ -1,0 +1,32 @@
+# docker-compose.override.yml
+# Este archivo se carga automáticamente cuando se ejecuta docker-compose up
+# Útil para configuraciones específicas de desarrollo local
+
+version: '3.8'
+
+services:
+  files-app:
+    # Mapear a puerto 3000 en desarrollo local
+    ports:
+      - "3000:3000"
+    
+    # Variables de entorno para desarrollo local
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    
+    # Volúmenes para desarrollo si necesitas editar archivos
+    # volumes:
+    #   - ./public:/app/public:ro
+    
+  files-app-dev:
+    # Configuraciones adicionales para desarrollo
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=true
+    
+    # Labels para organización
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.files-app-dev.rule=Host(`localhost`)"
+      - "traefik.http.services.files-app-dev.loadbalancer.server.port=3000"
