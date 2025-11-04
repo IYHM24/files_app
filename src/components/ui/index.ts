@@ -1,3 +1,11 @@
 export { Button } from './Button';
 export { Input } from './Input';
 export { LoadingSpinner } from './LoadingSpinner';
+export { CardCustom } from './CardCustom';
+export { StatsGrid } from './StatsGrid';
+export { Icons } from './Icons';
+export { FileUploadCard } from './FileUploadCard';
+export { FileInfo } from './FileInfo';
+export { ProgressBar } from './ProgressBar';
+export { Modal } from './Modal';
+export { FilePreviewModal } from './FilePreviewModal';
