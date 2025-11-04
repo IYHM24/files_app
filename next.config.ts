@@ -1,7 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Habilitar salida standalone para Docker
+  output: 'standalone',
+  
+  // Optimizaciones para producción
+  poweredByHeader: false,
+  compress: true,
+  
+  // Configuración de imágenes si es necesario
+  images: {
+    domains: [], // Agregar dominios de imágenes externas si es necesario
+    unoptimized: false,
+  },
+  
+  // Configuraciones experimentales
+  experimental: {
+    // Habilitar compilación paralela
+    webpackBuildWorker: true,
+  }
 };
 
 export default nextConfig;

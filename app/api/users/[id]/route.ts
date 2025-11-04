@@ -5,21 +5,24 @@ const userController = new UserController();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return userController.getUserById(request, { params });
+  const resolvedParams = await params;
+  return userController.getUserById(request, { params: resolvedParams });
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return userController.updateUser(request, { params });
+  const resolvedParams = await params;
+  return userController.updateUser(request, { params: resolvedParams });
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  return userController.deleteUser(request, { params });
+  const resolvedParams = await params;
+  return userController.deleteUser(request, { params: resolvedParams });
 }

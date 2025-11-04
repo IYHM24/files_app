@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Servicio principal de la aplicación Next.js
+  files-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: files-app-container
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Servicio de desarrollo (comentado por defecto)
+  # files-app-dev:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   container_name: files-app-dev-container
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   environment:
+  #     - NODE_ENV=development
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+# Volúmenes para persistencia si es necesario
+volumes:
+  app-data:

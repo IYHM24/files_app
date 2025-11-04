@@ -202,8 +202,11 @@ files_app/
 - Node.js 18+ 
 - npm o yarn
 - Git
+- Docker y Docker Compose (para contenedores)
 
 ### Pasos de Instalación
+
+#### **Método 1: Desarrollo Local**
 
 1. **Clonar el repositorio**
 ```bash
@@ -230,6 +233,106 @@ npm run dev
 5. **Abrir en el navegador**
 ```
 http://localhost:3000
+```
+
+#### **Método 2: Docker (Recomendado para Producción)**
+
+1. **Clonar el repositorio**
+```bash
+git clone <repository-url>
+cd files_app
+```
+
+2. **Usando Scripts Automatizados (Recomendado)**
+
+**En Linux/macOS:**
+```bash
+# Dar permisos de ejecución
+chmod +x docker-build.sh
+
+# Desarrollo con hot reload
+./docker-build.sh dev
+
+# Producción optimizada
+./docker-build.sh prod
+
+# Ver logs en tiempo real
+./docker-build.sh logs
+
+# Limpiar contenedores e imágenes
+./docker-build.sh clean
+```
+
+**En Windows (PowerShell):**
+```powershell
+# Desarrollo con hot reload
+.\docker-build.ps1 dev
+
+# Producción optimizada
+.\docker-build.ps1 prod
+
+# Ver logs en tiempo real
+.\docker-build.ps1 logs
+
+# Limpiar contenedores e imágenes
+.\docker-build.ps1 clean
+```
+
+3. **Usando Docker Compose (Alternativo)**
+```bash
+# Producción
+docker-compose up --build
+
+# Desarrollo (descomentar servicio en docker-compose.yml)
+docker-compose -f docker-compose.yml up files-app-dev
+```
+
+4. **Comandos Docker Manuales**
+```bash
+# Construir imagen de producción
+docker build -f Dockerfile -t files-app:latest .
+
+# Ejecutar contenedor
+docker run -d --name files-app-container -p 3000:3000 files-app:latest
+
+# Ver logs
+docker logs -f files-app-container
+```
+
+### 🐳 **Configuración de Docker**
+
+#### **Archivos de Docker Incluidos**
+- `Dockerfile` - Imagen optimizada para producción con multi-stage build
+- `Dockerfile.dev` - Imagen para desarrollo con hot reload
+- `docker-compose.yml` - Orquestación de servicios
+- `.dockerignore` - Exclusiones para optimizar el build
+- `docker-build.sh` - Script automatizado para Linux/macOS
+- `docker-build.ps1` - Script automatizado para Windows
+
+#### **Características de la Imagen Docker**
+- ✅ **Multi-stage build** para tamaño optimizado
+- ✅ **Node.js 20 Alpine** como base (imagen liviana)
+- ✅ **Usuario no-root** para seguridad
+- ✅ **Health checks** incorporados
+- ✅ **Output standalone** de Next.js
+- ✅ **Variables de entorno** configurables
+
+#### **Comandos Útiles de Docker**
+```bash
+# Ver contenedores ejecutándose
+docker ps
+
+# Acceder al contenedor
+docker exec -it files-app-container sh
+
+# Ver uso de recursos
+docker stats files-app-container
+
+# Ver logs con timestamps
+docker logs -f --timestamps files-app-container
+
+# Reiniciar contenedor
+docker restart files-app-container
 ```
 
 ## 📜 Scripts Disponibles
@@ -334,7 +437,10 @@ npm run type-check   # Verificación de tipos TypeScript
 - [ ] API input validation
 
 ### **Deployment**
-- [ ] Docker configuration
+- [x] **Docker configuration** ✅
+- [x] **Multi-stage Dockerfile** ✅
+- [x] **Docker Compose setup** ✅
+- [x] **Automated build scripts** ✅
 - [ ] CI/CD pipeline
 - [ ] Vercel/AWS deployment
 - [ ] Environment management

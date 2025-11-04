@@ -1,0 +1,53 @@
+# Dependencias
+node_modules
+npm-debug.log*
+
+# Archivos de desarrollo
+.next
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de sistema
+.DS_Store
+*.pem
+Thumbs.db
+
+# Archivos de IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+
+# Archivos de cobertura
+coverage
+.nyc_output
+
+# Archivos de pruebas
+.jest
+.coverage
+
+# Archivos de compilación
+out
+build
+dist
+
+# Archivos de Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Archivos temporales
+tmp
+temp
+*.tmp
