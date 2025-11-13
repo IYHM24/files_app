@@ -43,6 +43,8 @@ next-env.d.ts
 # uploads directory
 /uploads
 
+/nul
+
 # storage directory (keep structure, ignore files)
 /public/storage/*/*
 !/public/storage/.gitkeep
