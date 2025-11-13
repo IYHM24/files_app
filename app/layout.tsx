@@ -37,15 +37,7 @@ export default function RootLayout(
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Aqui va el layout */}
-        <div className="bg-blue-100 h-screen">
-          <div
-            className="p-5 max-h-screen overflow-auto container mx-auto"
-          >
-            {children}
-          </div>
-        </div>
-
+        {children}
       </body>
     </html>
   );

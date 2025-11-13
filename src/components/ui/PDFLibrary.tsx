@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils';
+import { DEBUG } from '../../config/debug';
 import { PDFModal } from './PDFModal';
+import { DebugInfo } from './DebugInfo';
 
 interface PDFFile {
   name: string;
@@ -134,8 +136,8 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
       {/* Header con controles */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Biblioteca de PDFs</h2>
-          <p className="text-gray-600 mt-1">
+          <h2 className="text-2xl font-bold text-white">Biblioteca de PDFs</h2>
+          <p className="text-gray-300 mt-1">
             {filteredPDFs.length} {filteredPDFs.length === 1 ? 'PDF' : 'PDFs'} encontrados
           </p>
         </div>
@@ -148,7 +150,7 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
               placeholder="Buscar PDFs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-gray-700 text-white placeholder-gray-400"
             />
             <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -158,10 +160,10 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
           {/* Refresh */}
           <button
             onClick={loadPDFs}
-            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="p-2 border border-gray-600 rounded-lg hover:bg-gray-700 transition-colors"
             title="Actualizar biblioteca"
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
@@ -174,8 +176,8 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
           <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No se encontraron PDFs</h3>
-          <p className="text-gray-500 mb-6">
+          <h3 className="text-lg font-medium text-white mb-2">No se encontraron PDFs</h3>
+          <p className="text-gray-400 mb-6">
             {searchTerm ? 'Prueba con otros términos de búsqueda' : 'Sube algunos PDFs desde el tab "Cargar Archivos" para comenzar'}
           </p>
           {searchTerm && (
@@ -210,23 +212,18 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
       )}
 
       {/* Debug info */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-2">Debug Info:</h4>
-        <div className="text-sm text-gray-600 space-y-1">
-          <p>• Estado: {loading ? 'Cargando' : error ? 'Error' : 'Cargado'}</p>
-          <p>• PDFs encontrados: {pdfs.length}</p>
-          <p>• PDFs filtrados: {filteredPDFs.length}</p>
-          <p>• Término de búsqueda: "{searchTerm}"</p>
-          <p>• API endpoint: /api/files/list</p>
-          <p>• Última actualización: {new Date().toLocaleTimeString()}</p>
-        </div>
-        <button
-          onClick={loadPDFs}
-          className="mt-2 px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-        >
-          Recargar Debug
-        </button>
-      </div>
+      <DebugInfo
+        info={[
+          { label: 'Estado', value: loading ? 'Cargando' : error ? 'Error' : 'Cargado' },
+          { label: 'PDFs encontrados', value: pdfs.length },
+          { label: 'PDFs filtrados', value: filteredPDFs.length },
+          { label: 'Término de búsqueda', value: `"${searchTerm}"` },
+          { label: 'API endpoint', value: '/api/files/list' },
+          { label: 'Última actualización', value: new Date().toLocaleTimeString() }
+        ]}
+        onReload={loadPDFs}
+        reloadLabel="Recargar Debug"
+      />
     </div>
   );
 };
@@ -248,10 +245,10 @@ const PDFCard: React.FC<PDFCardProps> = ({ pdf, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer bg-white rounded-lg border border-gray-200 hover:border-red-300 hover:shadow-lg transition-all duration-200"
+      className="group cursor-pointer bg-gray-900 rounded-lg border border-gray-700 hover:border-red-500 hover:shadow-lg transition-all duration-200"
     >
       {/* Ícono PDF */}
-      <div className="relative aspect-3/4 bg-linear-to-br from-red-50 to-red-100 rounded-t-lg overflow-hidden">
+      <div className="relative aspect-3/4 bg-gradient-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="text-6xl mb-3">📄</div>
@@ -270,10 +267,10 @@ const PDFCard: React.FC<PDFCardProps> = ({ pdf, onClick }) => {
 
       {/* Información del PDF */}
       <div className="p-4">
-        <h3 className="font-medium text-gray-900 truncate group-hover:text-red-600 transition-colors mb-2">
+        <h3 className="font-medium text-white truncate group-hover:text-red-400 transition-colors mb-2">
           {pdf.name}
         </h3>
-        <div className="space-y-1 text-xs text-gray-500">
+        <div className="space-y-1 text-xs text-gray-400">
           <div className="flex items-center justify-between">
             <span>Tamaño:</span>
             <span className="font-medium">{formatFileSize(pdf.size)}</span>
@@ -285,8 +282,8 @@ const PDFCard: React.FC<PDFCardProps> = ({ pdf, onClick }) => {
         </div>
         
         {/* Botón de ver */}
-        <div className="mt-3 pt-3 border-t border-gray-100">
-          <div className="flex items-center justify-center text-red-600 group-hover:text-red-700 transition-colors">
+        <div className="mt-3 pt-3 border-t border-gray-700">
+          <div className="flex items-center justify-center text-red-400 group-hover:text-red-300 transition-colors">
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />

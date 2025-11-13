@@ -198,6 +198,49 @@ files_app/
 
 ## 🚀 Instalación y Configuración
 
+### **Información de Debug**
+
+La aplicación incluye un sistema de debug que se puede controlar con la variable de entorno `NEXT_PUBLIC_DEBUG`:
+
+- **Activado por defecto en desarrollo**: Se muestra automáticamente en `NODE_ENV=development`
+- **Control manual**: Establece `NEXT_PUBLIC_DEBUG=true` para activar en cualquier entorno
+- **Producción**: Establece `NEXT_PUBLIC_DEBUG=false` o elimina la variable para desactivar
+
+La información de debug incluye:
+- Estado de carga de los componentes
+- Número de archivos encontrados y filtrados
+- Términos de búsqueda activos
+- Endpoints de API utilizados
+- Timestamps de última actualización
+
+#### **Sistema de Logging de Debug**
+
+```typescript
+import { debugLog, debugWarn, debugError } from '../config/debug';
+
+// Logs condicionales basados en la bandera DEBUG
+debugLog('Información general');
+debugWarn('Advertencia importante');
+debugError('Error encontrado');
+```
+
+#### **Componente DebugInfo**
+
+Componente reutilizable que muestra información de estado:
+
+```tsx
+import { DebugInfo } from './DebugInfo';
+
+<DebugInfo
+  info={[
+    { label: 'Estado', value: 'Cargado' },
+    { label: 'Archivos', value: files.length }
+  ]}
+  onReload={reloadFunction}
+  reloadLabel="Recargar"
+/>
+```
+
 ### Prerequisitos
 - Node.js 18+ 
 - npm o yarn

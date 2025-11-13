@@ -97,13 +97,13 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 
   if (hasError) {
     return (
-      <div className={`relative aspect-video bg-linear-to-br from-gray-100 to-gray-200 rounded-t-lg overflow-hidden ${className}`}>
+      <div className={`relative aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="text-4xl mb-2">
               {getVideoTypeIcon(videoName)}
             </div>
-            <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-200 shadow-lg">
+            <div className="w-16 h-16 bg-gray-900 bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-200 shadow-lg">
               <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
@@ -115,7 +115,7 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
   }
 
   return (
-    <div className={`relative aspect-video bg-linear-to-br from-gray-100 to-gray-200 rounded-t-lg overflow-hidden ${className}`}>
+    <div className={`relative aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
       {/* Video oculto para generar thumbnail */}
       <video
         ref={videoRef}
@@ -137,10 +137,10 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 
       {/* Thumbnail generado o loading */}
       {isLoading ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
           <div className="text-center">
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-2"></div>
-            <p className="text-xs text-gray-500">Generando vista previa...</p>
+            <p className="text-xs text-gray-300">Generando vista previa...</p>
           </div>
         </div>
       ) : thumbnailUrl ? (
@@ -165,7 +165,7 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
             <div className="text-4xl mb-2">
               {getVideoTypeIcon(videoName)}
             </div>
-            <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-200 shadow-lg">
+            <div className="w-16 h-16 bg-gray-900 bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-200 shadow-lg">
               <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>

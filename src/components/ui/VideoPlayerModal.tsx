@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '../../utils';
 
 interface VideoPlayerModalProps {
@@ -48,27 +49,34 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
+      style={{ margin: 0, padding: 0, width: '100vw', height: '100vh', top: 0, left: 0, position: 'fixed' }}
     >
       <div
         ref={modalRef}
         className={cn(
-          'relative max-w-4xl w-full mx-4 bg-black rounded-lg shadow-2xl overflow-hidden',
+          'relative w-[98vw] h-[98vh] bg-gray-900 rounded-xl shadow-2xl flex flex-col overflow-hidden border border-gray-700 animate-in zoom-in-95 duration-300',
           className
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header del modal */}
-        <div className="flex items-center justify-between p-4 bg-gray-900 border-b border-gray-700">
-          <h3 className="text-lg font-medium text-white truncate">
-            {videoTitle}
-          </h3>
+        <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-800 border-b border-gray-700 rounded-t-lg shrink-0">
+          <div className="flex items-center space-x-3 min-w-0 flex-1">
+            <span className="text-2xl">🎬</span>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-lg font-medium text-white truncate">
+                {videoTitle}
+              </h3>
+              <p className="text-sm text-gray-400">Video</p>
+            </div>
+          </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors p-1"
+            className="text-gray-300 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded-lg shrink-0 ml-2"
             aria-label="Cerrar modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +86,7 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
         </div>
 
         {/* Video player */}
-        <div className="relative aspect-video bg-black">
+        <div className="relative flex-1 min-h-0 bg-black flex items-center justify-center">
           <video
             ref={videoRef}
             src={videoUrl}
@@ -101,13 +109,23 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
           </video>
         </div>
 
-        {/* Footer del modal (opcional) */}
-        <div className="p-4 bg-gray-900 border-t border-gray-700 text-center">
-          <p className="text-sm text-gray-400">
-            Presiona <kbd className="px-2 py-1 bg-gray-700 rounded text-white">ESC</kbd> o haz click fuera del video para cerrar
-          </p>
+        {/* Footer del modal */}
+        <div className="p-3 sm:p-4 bg-gray-800 border-t border-gray-700 rounded-b-lg shrink-0">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+            <div className="text-sm text-gray-400">
+              <span className="inline-flex items-center space-x-1">
+                <span>🎬</span>
+                <span>Video en reproducción</span>
+              </span>
+            </div>
+            <div className="text-sm text-gray-500">
+              Presiona <kbd className="px-2 py-1 bg-gray-700 rounded text-white">ESC</kbd> o haz click fuera del video para cerrar
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
