@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils';
 import { FileUploadCard } from './FileUploadCard';
 import { VideoLibrary } from './VideoLibrary';
-import { ImageLibrary } from './ImageLibrary';
+import { SimpleImageLibrary } from './SimpleImageLibrary';
 import { PDFLibrary } from './PDFLibrary';
 
 interface FileType {
@@ -129,7 +129,7 @@ export const FileManager: React.FC<FileManagerProps> = ({ className }) => {
       case 'videos':
         return <VideoLibrary />;
       case 'imgenes': // 'Imágenes' sin tilde después de getTabKey
-        return <ImageLibrary />;
+        return <SimpleImageLibrary />;
       case 'pdfs':
         return <PDFLibrary />;
       default:
@@ -140,7 +140,7 @@ export const FileManager: React.FC<FileManagerProps> = ({ className }) => {
           if (typeName.includes('video')) {
             return <VideoLibrary />;
           } else if (typeName.includes('imagen')) {
-            return <ImageLibrary />;
+            return <SimpleImageLibrary />;
           } else if (typeName.includes('pdf')) {
             return <PDFLibrary />;
           }

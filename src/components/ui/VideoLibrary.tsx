@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils';
 import { VideoPlayerModal } from './VideoPlayerModal';
+import { VideoThumbnail } from './VideoThumbnail';
 
 interface Video {
   name: string;
@@ -265,24 +266,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
       onClick={onClick}
       className="group cursor-pointer bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200"
     >
-      {/* Thumbnail */}
-      <div className="relative aspect-video bg-linear-to-br from-gray-100 to-gray-200 rounded-t-lg overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-4xl mb-2">
-              {getVideoTypeIcon(video.name)}
-            </div>
-            <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-all duration-200 shadow-lg">
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-        
-        {/* Overlay de hover */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200" />
-      </div>
+      {/* Thumbnail dinámico */}
+      <VideoThumbnail 
+        videoUrl={video.publicUrl}
+        videoName={video.name}
+        className=""
+      />
 
       {/* Información del video */}
       <div className="p-4">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils';
-import { VideoPlayerModal } from './VideoPlayerModal';
-import { ImagePreview } from './ImagePreview';
+import { ImageModal } from './ImageModal';
+import { ImageThumbnail } from './ImageThumbnail';
 
 interface ImageFile {
   name: string;
@@ -12,28 +12,30 @@ interface ImageFile {
   serveUrl?: string;
 }
 
-interface ImageLibraryProps {
+interface SimpleImageLibraryProps {
   className?: string;
 }
 
-export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
+export const SimpleImageLibrary: React.FC<SimpleImageLibraryProps> = ({ className }) => {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<ImageFile | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{ name: string; url: string; } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadImages();
   }, []);
 
-  // Filtrar imágenes
   const filteredImages = images.filter(image =>
     image.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleImageClick = (image: ImageFile) => {
-    setSelectedImage(image);
+    setSelectedImage({
+      name: image.name,
+      url: image.publicUrl
+    });
   };
 
   const closeModal = () => {
@@ -44,8 +46,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
     setLoading(true);
     setError(null);
     try {
-      console.log('Cargando imágenes...');
-      
       const response = await fetch('/api/files/list');
       
       if (!response.ok) {
@@ -53,7 +53,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
       }
       
       const result = await response.json();
-      console.log('Respuesta de la API:', result);
       
       if (!result.success) {
         console.warn('API retornó error:', result.error);
@@ -61,7 +60,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
         return;
       }
 
-      // Filtrar solo archivos de imagen
       const imageList: ImageFile[] = [];
       const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
       
@@ -75,17 +73,15 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
                 size: file.size,
                 modified: file.modified,
                 path: file.path,
-                publicUrl: file.publicUrl,
-                serveUrl: `/api/files/serve/${dir.name}/${encodeURIComponent(file.name)}`
+                publicUrl: `/storage/image/${file.name}`,
+                serveUrl: `/storage/image/${file.name}`
               });
             }
           }
         }
       }
       
-      console.log('Directorios encontrados:', result.files?.map((d: any) => d.name));
       console.log('Imágenes encontradas:', imageList.length);
-      console.log('URLs de imágenes:', imageList.map(img => ({ name: img.name, url: img.publicUrl })));
       setImages(imageList);
       
     } catch (err) {
@@ -116,7 +112,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <p className="font-medium text-sm">{error}</p>
-          <p className="text-sm mt-2 text-gray-500">Esto es normal si no has subido imágenes aún</p>
         </div>
         <button
           onClick={loadImages}
@@ -130,7 +125,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
 
   return (
     <div className={cn('p-6', className)}>
-      {/* Header con controles */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Biblioteca de Imágenes</h2>
@@ -140,7 +134,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
         </div>
         
         <div className="flex items-center space-x-4">
-          {/* Búsqueda */}
           <div className="relative">
             <input
               type="text"
@@ -154,11 +147,9 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
             </svg>
           </div>
 
-          {/* Refresh */}
           <button
             onClick={loadImages}
             className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            title="Actualizar biblioteca"
           >
             <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -167,7 +158,6 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
         </div>
       </div>
 
-      {/* Grid de imágenes */}
       {filteredImages.length === 0 ? (
         <div className="text-center py-12">
           <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,19 +167,11 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
           <p className="text-gray-500 mb-6">
             {searchTerm ? 'Prueba con otros términos de búsqueda' : 'Sube algunas imágenes desde el tab "Cargar Archivos" para comenzar'}
           </p>
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm('')}
-              className="text-green-600 hover:text-green-700 font-medium"
-            >
-              Limpiar búsqueda
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredImages.map((image) => (
-            <ImageCard
+            <SimpleImageCard
               key={image.path}
               image={image}
               onClick={() => handleImageClick(image)}
@@ -198,143 +180,56 @@ export const ImageLibrary: React.FC<ImageLibraryProps> = ({ className }) => {
         </div>
       )}
 
-      {/* Modal de imagen */}
       {selectedImage && (
-        <VideoPlayerModal
+        <ImageModal
           isOpen={!!selectedImage}
           onClose={closeModal}
-          videoUrl={selectedImage.publicUrl}
-          videoTitle={selectedImage.name}
+          imageUrl={selectedImage.url}
+          imageName={selectedImage.name}
         />
       )}
 
-      {/* Debug info mejorada */}
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-gray-700 mb-2">Debug Info:</h4>
-        <div className="text-sm text-gray-600 space-y-1">
-          <p>• Estado: {loading ? 'Cargando' : error ? 'Error' : 'Cargado'}</p>
-          <p>• Imágenes encontradas: {images.length}</p>
-          <p>• Imágenes filtradas: {filteredImages.length}</p>
-          <p>• Término de búsqueda: "{searchTerm}"</p>
-          <p>• API endpoint: /api/files/list</p>
-          <p>• Última actualización: {new Date().toLocaleTimeString()}</p>
-          
-          {images.length > 0 && (
-            <details className="mt-4">
-              <summary className="cursor-pointer font-medium text-gray-700">URLs de imágenes (click para expandir)</summary>
-              <div className="mt-2 space-y-1 text-xs">
-                {images.map((img, index) => (
-                  <div key={index} className="p-2 bg-white rounded border">
-                    <p><strong>Nombre:</strong> {img.name}</p>
-                    <p><strong>URL:</strong> <a href={img.publicUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{img.publicUrl}</a></p>
-                    <p><strong>Tamaño:</strong> {(img.size / 1024).toFixed(1)} KB</p>
-                  </div>
-                ))}
-              </div>
-            </details>
-          )}
+        <h4 className="font-medium text-gray-700 mb-2">URLs de prueba:</h4>
+        <div className="space-y-2">
+          {images.slice(0, 3).map((img, index) => (
+            <div key={index} className="text-sm">
+              <a href={img.publicUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                {img.name} → {img.publicUrl}
+              </a>
+            </div>
+          ))}
         </div>
-        <button
-          onClick={loadImages}
-          className="mt-2 px-3 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-        >
-          Recargar Debug
-        </button>
       </div>
     </div>
   );
 };
 
-// Componente ImageCard
-interface ImageCardProps {
+interface SimpleImageCardProps {
   image: ImageFile;
   onClick: () => void;
 }
 
-const ImageCard: React.FC<ImageCardProps> = ({ image, onClick }) => {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  
-  const formatFileSize = (bytes: number) => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  };
-
+const SimpleImageCard: React.FC<SimpleImageCardProps> = ({ image, onClick }) => {
   return (
     <div
       onClick={onClick}
       className="group cursor-pointer bg-white rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-200"
     >
-      {/* Imagen con manejo de errores mejorado */}
-      <div className="relative aspect-square bg-gray-100 rounded-t-lg overflow-hidden">
-        {/* Siempre mostrar loading/placeholder hasta confirmar carga */}
-        <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-green-50 to-green-100">
-          <div className="text-center">
-            {!isImageLoaded && !hasError ? (
-              <>
-                <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin mb-2"></div>
-                <p className="text-xs text-gray-600 font-medium">Cargando imagen...</p>
-              </>
-            ) : hasError ? (
-              <div className="p-4">
-                <div className="text-4xl mb-2">🖼️</div>
-                <p className="text-sm text-red-600 font-medium">Error al cargar</p>
-                <p className="text-xs text-red-500 mt-1 truncate max-w-full">{image.name}</p>
-                <button 
-                  className="mt-2 px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(image.publicUrl, '_blank');
-                  }}
-                >
-                  Ver imagen
-                </button>
-              </div>
-            ) : (
-              <div className="p-4">
-                <div className="text-4xl mb-2">🖼️</div>
-                <p className="text-sm text-green-600 font-medium">Imagen lista</p>
-                <p className="text-xs text-gray-500 mt-1">{image.name}</p>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        <img
+      {/* Thumbnail real de la imagen */}
+      <div className="relative aspect-square overflow-hidden rounded-t-lg">
+        <ImageThumbnail
           src={image.publicUrl}
           alt={image.name}
-          className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-300 z-10 ${
-            isImageLoaded && !hasError ? 'opacity-100' : 'opacity-0'
-          }`}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-          crossOrigin="anonymous"
-          onError={(e) => {
-            console.error('Error cargando imagen:', {
-              name: image.name, 
-              url: image.publicUrl,
-              error: e
-            });
-            setHasError(true);
-            setIsImageLoaded(true);
-          }}
-          onLoad={(e) => {
-            console.log('Imagen cargada exitosamente:', {
-              name: image.name,
-              naturalWidth: (e.target as HTMLImageElement).naturalWidth,
-              naturalHeight: (e.target as HTMLImageElement).naturalHeight
-            });
-            setIsImageLoaded(true);
-            setHasError(false);
-          }}
+          width={200}
+          height={200}
+          className="w-full h-full"
         />
         
-        {/* Overlay de hover */}
+        {/* Overlay al hacer hover */}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <div className="bg-white bg-opacity-90 rounded-full p-3">
+            <div className="bg-white rounded-full p-2 shadow-lg">
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -344,14 +239,27 @@ const ImageCard: React.FC<ImageCardProps> = ({ image, onClick }) => {
         </div>
       </div>
 
-      {/* Información de la imagen */}
       <div className="p-3">
-        <h3 className="font-medium text-gray-900 truncate group-hover:text-green-600 transition-colors text-sm">
-          {image.name}
-        </h3>
+        <h3 className="font-medium text-gray-900 truncate text-sm">{image.name}</h3>
         <div className="mt-1 text-xs text-gray-500">
-          <p>{formatFileSize(image.size)}</p>
+          <p>{(image.size / 1024).toFixed(1)} KB</p>
           <p>{new Date(image.modified).toLocaleDateString()}</p>
+        </div>
+        
+        {/* Botón secundario para enlace directo */}
+        <div className="mt-2">
+          <a
+            href={image.publicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs rounded hover:bg-green-200 transition-colors"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            Abrir
+          </a>
         </div>
       </div>
     </div>

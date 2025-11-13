@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '../../utils';
-import { VideoPlayerModal } from './VideoPlayerModal';
+import { PDFModal } from './PDFModal';
 
 interface PDFFile {
   name: string;
@@ -19,7 +19,7 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
   const [pdfs, setPdfs] = useState<PDFFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPDF, setSelectedPDF] = useState<PDFFile | null>(null);
+  const [selectedPDF, setSelectedPDF] = useState<{ name: string; url: string; } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -32,7 +32,10 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
   );
 
   const handlePDFClick = (pdf: PDFFile) => {
-    setSelectedPDF(pdf);
+    setSelectedPDF({
+      name: pdf.name,
+      url: pdf.publicUrl
+    });
   };
 
   const closeModal = () => {
@@ -198,11 +201,11 @@ export const PDFLibrary: React.FC<PDFLibraryProps> = ({ className }) => {
 
       {/* Modal de PDF */}
       {selectedPDF && (
-        <VideoPlayerModal
+        <PDFModal
           isOpen={!!selectedPDF}
           onClose={closeModal}
-          videoUrl={selectedPDF.publicUrl}
-          videoTitle={selectedPDF.name}
+          pdfUrl={selectedPDF.url}
+          pdfName={selectedPDF.name}
         />
       )}
 
