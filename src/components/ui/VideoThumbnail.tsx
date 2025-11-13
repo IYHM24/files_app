@@ -97,7 +97,7 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 
   if (hasError) {
     return (
-      <div className={`relative aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
+      <div className={`relative aspect-video bg-linear-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <div className="text-4xl mb-2">
@@ -115,7 +115,7 @@ export const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
   }
 
   return (
-    <div className={`relative aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
+    <div className={`relative aspect-video bg-linear-to-br from-gray-800 to-gray-700 rounded-t-lg overflow-hidden ${className}`}>
       {/* Video oculto para generar thumbnail */}
       <video
         ref={videoRef}

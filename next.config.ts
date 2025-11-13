@@ -14,11 +14,14 @@ const nextConfig: NextConfig = {
     unoptimized: false,
   },
   
+  // Configuración vacía de Turbopack para evitar conflictos
+  turbopack: {},
+  
   // Configuraciones experimentales
   experimental: {
     // Habilitar compilación paralela
     webpackBuildWorker: true,
-  }
+  },
 };
 
 export default nextConfig;

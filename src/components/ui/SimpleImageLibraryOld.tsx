@@ -223,6 +223,7 @@ export const SimpleImageLibrary: React.FC<SimpleImageLibraryProps> = ({ classNam
           ))}
         </div>
       </div>
+      </div>
     </div>
   );
 };

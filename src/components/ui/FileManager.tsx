@@ -197,7 +197,7 @@ export const FileManager: React.FC<FileManagerProps> = ({ className }) => {
                 <span>Cargar Archivos</span>
               </div>
               {activeTab === 'upload' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-blue-500 to-blue-600"></div>
               )}
             </button>
 
@@ -234,12 +234,12 @@ export const FileManager: React.FC<FileManagerProps> = ({ className }) => {
                       <span className="text-white text-xs">{fileType.icon}</span>
                     </div>
                     <span>{fileType.name}</span>
-                    <div className="ml-2 px-2 py-0.5 text-xs font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-full">
+                    <div className="ml-2 px-2 py-0.5 text-xs font-bold text-white bg-linear-to-r from-blue-500 to-blue-600 rounded-full">
                       {fileType.count}
                     </div>
                   </div>
                   {isActive && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-blue-600"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-linear-to-r from-blue-500 to-blue-600"></div>
                   )}
                 </button>
               );
@@ -275,7 +275,7 @@ export const FileManager: React.FC<FileManagerProps> = ({ className }) => {
             </div>
             <button
               onClick={loadFileCounts}
-              className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center space-x-2 px-4 py-2 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
