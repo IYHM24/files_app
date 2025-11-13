@@ -62,6 +62,12 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copiar package.json para el servidor standalone
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 
+# Asegurar que la carpeta de storage existe y pertenece al usuario de la app
+RUN mkdir -p public/storage && chown -R nextjs:nodejs public/storage
+
+# Declarar la carpeta como volumen (documentación/optimización para runtime)
+VOLUME ["/app/public/storage"]
+
 USER nextjs
 
 EXPOSE 3000

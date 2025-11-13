@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { cn } from '../../utils';
 import { useDragDrop } from '../../hooks/useDragDrop';
 import { FilePreviewModal } from './FilePreviewModal';
@@ -9,6 +9,8 @@ interface FileUploadCardProps {
   onFileSelect?: (file: File) => void;
   maxFileSize?: number; // en MB
   acceptedTypes?: string[];
+  selectedFile?: File | null;
+  setSelectedFile?: (file: File | null) => void;
   className?: string;
 }
 
@@ -197,13 +199,36 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ],
+  selectedFile = null,
+  setSelectedFile = () => {},
   className,
 }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  //const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sincronizar la URL del archivo cuando selectedFile cambie desde props externas
+  useEffect(() => {
+    if (selectedFile && !fileUrl) {
+      // Si hay un archivo seleccionado pero no hay URL, crear una nueva
+      const url = URL.createObjectURL(selectedFile);
+      setFileUrl(url);
+      setError('');
+    } else if (!selectedFile && fileUrl) {
+      // Si no hay archivo pero sí hay URL, limpiar la URL
+      URL.revokeObjectURL(fileUrl);
+      setFileUrl('');
+    }
+
+    // Cleanup: revocar URL al desmontar o cambiar archivo
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [selectedFile]); // Solo depende de selectedFile
 
   // Usar el hook de drag & drop
   const { isDragActive, dragHandlers, handleFileSelection } = useDragDrop({

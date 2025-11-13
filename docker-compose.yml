@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Servicio principal de la aplicación Next.js
   files-app:
@@ -26,14 +24,17 @@ services:
       retries: 3
       start_period: 15s
     # Opcional: Limitar recursos
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
-        reservations:
-          memory: 256M
-          cpus: '0.25'
+    #deploy:
+    #  resources:
+    #    limits:
+    #      memory: 512M
+    #      cpus: '0.5'
+    #    reservations:
+    #      memory: 256M
+    #      cpus: '0.25'
+    # Volumen para persistencia de archivos subidos (public/storage)
+    volumes:
+      - ./docker/storage:/app/public/storage
 
   # Servicio de desarrollo - usar: docker-compose -f docker-compose.yml up files-app-dev
   files-app-dev:
@@ -50,6 +51,8 @@ services:
       - .:/app
       - /app/node_modules
       - /app/.next
+      # Montar la carpeta local public/storage para ver los archivos subidos localmente
+      - ./public/storage:/app/public/storage
     environment:
       - NODE_ENV=development
       - PORT=3000
@@ -78,4 +81,6 @@ volumes:
   app-data:
     driver: local
   node_modules_cache:
+    driver: local
+  storage:
     driver: local
